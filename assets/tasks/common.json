@@ -166,6 +166,27 @@
             }
         },
         {
+            "label": "apply-torizon-packages",
+            "command": "pwsh",
+            "type": "process",
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "args": [
+                "${workspaceFolder}/.conf/torizonPackages.ps1"
+            ],
+            "dependsOrder": "sequence",
+            "icon": {
+                "id": "layers",
+                "color": "terminal.ansiCyan"
+            }
+        },
+        {
             "label": "copy-docker-compose",
             "command": "sshpass",
             "type": "process",
@@ -234,6 +255,54 @@
             "args": [
                 "-c",
                 "[[ ! -z \"${config:torizon_ip}\" ]] && true || false"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "layers",
+                "color": "terminal.ansiCyan"
+            }
+        },
+        {
+            "label": "validate-arch-x86",
+            "detail": "hide",
+            "command": "bash",
+            "type": "process",
+            "args": [
+                "-c",
+                "[[ \"${config:torizon_arch}\" == \"x86_64\" ]] && true || false"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "layers",
+                "color": "terminal.ansiCyan"
+            }
+        },
+        {
+            "label": "validate-arch-arm",
+            "detail": "hide",
+            "command": "bash",
+            "type": "process",
+            "args": [
+                "-c",
+                "[[ \"${config:torizon_arch}\" == \"armhf\" ]] && true || false"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "layers",
+                "color": "terminal.ansiCyan"
+            }
+        },
+        {
+            "label": "validate-arch-arm64",
+            "detail": "hide",
+            "command": "bash",
+            "type": "process",
+            "args": [
+                "-c",
+                "[[ \"${config:torizon_arch}\" == \"aarch64\" ]] && true || false"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

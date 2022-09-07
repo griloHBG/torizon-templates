@@ -2,6 +2,22 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Open Mono Designer",
+            "command": "mono",
+            "type": "process",
+            "args": [
+                "${workspaceFolder}/.conf/mwf-designer/mwf-designer.exe",
+                "${file}"
+            ],
+            "dependsOrder": "sequence",
+            "isBackground": true,
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "eye",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
             "label": "build-application",
             "command": "msbuild",
             "type": "process",
@@ -140,7 +156,7 @@
                 "build",
                 "--build-arg",
                 "IMAGE_ARCH=arm/v7",
-                "dotnet-mono-debug"
+                "__container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -162,7 +178,7 @@
             },
             "args": [
                 "push",
-                "dotnet-mono-debug"
+                "__container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -185,7 +201,7 @@
                 "-o",
                 "StrictHostKeyChecking=no",
                 "torizon@${config:torizon_ip}",
-                "LOCAL_REGISTRY=${config:host_ip} TAG=arm docker-compose pull dotnet-mono-debug"
+                "LOCAL_REGISTRY=${config:host_ip} TAG=arm docker-compose pull __container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -208,7 +224,7 @@
                 "-o",
                 "StrictHostKeyChecking=no",
                 "torizon@${config:torizon_ip}",
-                "LOCAL_REGISTRY=${config:host_ip} TAG=arm docker-compose up -d dotnet-mono-debug"
+                "LOCAL_REGISTRY=${config:host_ip} TAG=arm docker-compose up -d __container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -259,6 +275,8 @@
             ],
             "dependsOn": [
                 "validate-settings",
+                "validate-arch-arm",
+                "apply-torizon-packages",
                 "copy-docker-compose",
                 "pre-cleanup-arm",
                 "build-application",
@@ -292,7 +310,7 @@
                 "build",
                 "--build-arg",
                 "IMAGE_ARCH=arm64",
-                "dotnet-mono-debug"
+                "__container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -314,7 +332,7 @@
             },
             "args": [
                 "push",
-                "dotnet-mono-debug"
+                "__container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -337,7 +355,7 @@
                 "-o",
                 "StrictHostKeyChecking=no",
                 "torizon@${config:torizon_ip}",
-                "LOCAL_REGISTRY=${config:host_ip} TAG=arm64 docker-compose pull dotnet-mono-debug"
+                "LOCAL_REGISTRY=${config:host_ip} TAG=arm64 docker-compose pull __container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -360,7 +378,7 @@
                 "-o",
                 "StrictHostKeyChecking=no",
                 "torizon@${config:torizon_ip}",
-                "LOCAL_REGISTRY=${config:host_ip} TAG=arm64 docker-compose up -d dotnet-mono-debug"
+                "LOCAL_REGISTRY=${config:host_ip} TAG=arm64 docker-compose up -d __container__-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -411,6 +429,8 @@
             ],
             "dependsOn": [
                 "validate-settings",
+                "validate-arch-arm64",
+                "apply-torizon-packages",
                 "copy-docker-compose",
                 "pre-cleanup-arm64",
                 "build-application",
@@ -471,6 +491,210 @@
             "dependsOn": [
                 "docker-login",
                 "build-release-arm64"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "build-container-torizon-debug-amd64",
+            "detail": "hide",
+            "command": "docker-compose",
+            "type": "process",
+            "options": {
+                "env": {
+                    "LOCAL_REGISTRY": "localhost",
+                    "TAG": "amd64"
+                }
+            },
+            "args": [
+                "build",
+                "--build-arg",
+                "IMAGE_ARCH=amd64",
+                "__container__-debug"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "push-container-torizon-debug-amd64",
+            "detail": "hide",
+            "command": "docker-compose",
+            "type": "process",
+            "options": {
+                "env": {
+                    "LOCAL_REGISTRY": "localhost",
+                    "TAG": "amd64"
+                }
+            },
+            "args": [
+                "push",
+                "__container__-debug"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "pull-container-torizon-debug-amd64",
+            "detail": "hide",
+            "command": "sshpass",
+            "type": "process",
+            "args": [
+                "-p",
+                "${config:torizon_psswd}",
+                "ssh",
+                "-o",
+                "UserKnownHostsFile=/dev/null",
+                "-o",
+                "StrictHostKeyChecking=no",
+                "torizon@${config:torizon_ip}",
+                "LOCAL_REGISTRY=${config:host_ip} TAG=amd64 docker-compose pull __container__-debug"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "run-container-torizon-debug-amd64",
+            "detail": "hide",
+            "command": "sshpass",
+            "type": "process",
+            "args": [
+                "-p",
+                "${config:torizon_psswd}",
+                "ssh",
+                "-o",
+                "UserKnownHostsFile=/dev/null",
+                "-o",
+                "StrictHostKeyChecking=no",
+                "torizon@${config:torizon_ip}",
+                "LOCAL_REGISTRY=${config:host_ip} TAG=amd64 docker-compose up -d __container__-debug"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "pre-cleanup-amd64",
+            "detail": "hide",
+            "command": "sshpass",
+            "type": "process",
+            "args": [
+                "-p",
+                "${config:torizon_psswd}",
+                "ssh",
+                "-o",
+                "UserKnownHostsFile=/dev/null",
+                "-o",
+                "StrictHostKeyChecking=no",
+                "torizon@${config:torizon_ip}",
+                "LOCAL_REGISTRY=${config:host_ip} TAG=amd64 docker-compose down --remove-orphans"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "run-mono-debug-server-amd64",
+            "detail": "hide",
+            "command": "ssh",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/.conf/id_rsa",
+                "-p",
+                "${config:torizon_debug_ssh_port}",
+                "-o",
+                "UserKnownHostsFile=/dev/null",
+                "-o",
+                "StrictHostKeyChecking=no",
+                "torizon@${config:torizon_ip}",
+                "mono --debug --debugger-agent=transport=dt_socket,server=y,address=0.0.0.0:55555 ~/app/__change__.exe > out.log 2> err.log &"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-x86",
+                "apply-torizon-packages",
+                "copy-docker-compose",
+                "pre-cleanup-amd64",
+                "build-application",
+                "build-container-torizon-debug-amd64",
+                "push-container-torizon-debug-amd64",
+                "pull-container-torizon-debug-amd64",
+                "run-container-torizon-debug-amd64",
+                "wait-a-bit",
+                "pos-cleanup",
+                "deploy-application",
+                "deploy-assets"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "build-release-amd64",
+            "detail": "hide",
+            "command": "docker-compose",
+            "type": "process",
+            "options": {
+                "env": {
+                    "DOCKER_LOGIN": "${input:dockerLogin}",
+                    "TAG": "amd64"
+                }
+            },
+            "args": [
+                "build",
+                "--build-arg",
+                "IMAGE_ARCH=amd64",
+                "__container__"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "push-release-amd64",
+            "command": "docker-compose",
+            "type": "process",
+            "options": {
+                "env": {
+                    "DOCKER_LOGIN": "${input:dockerLogin}",
+                    "TAG": "amd64"
+                }
+            },
+            "args": [
+                "push",
+                "__container__"
+            ],
+            "dependsOn": [
+                "docker-login",
+                "build-release-amd64"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
